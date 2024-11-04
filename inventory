@@ -1,2 +1,5 @@
-ubuntu.whitehills.local apache_package=apache2 php_package=libapache2-mod-php
-rocky.whitehills.local apache_package=httpd php_package=php
+[web_servers]
+ubuntu.whitehills.local
+
+[db_servers]
+rocky.whitehills.local
