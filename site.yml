@@ -1,25 +1,31 @@
+# Comment Test: Site YAML Playbook
 ---
 - hosts: all
   become: true
   pre_tasks:
 
   - name: install updates for Rocky
+    tags: always
     ansible.builtin.dnf:
       update_only: yes
       update_cache: yes
     when: ansible_distribution == "Rocky"
 
   - name: install updates for Ubuntu
+    tags: always
     ansible.builtin.apt:
       upgrade: dist
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
+
+# Web Servers
 
 - hosts: web_servers
   become: true
   tasks:
 
   - name: install apache2 on web servers
+    tags: apache,ubuntu
     ansible.builtin.apt:
       name:
         - apache2
@@ -27,7 +33,10 @@
       state: latest
     when: ansible_distribution == "Ubuntu"
 
+# Database Servers
+
 - hosts: db_servers
+  tags: db,rocky
   become: true
   tasks:
 
