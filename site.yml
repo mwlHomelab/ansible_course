@@ -24,7 +24,7 @@
   become: true
   tasks:
 
-  - name: install apache2 on web servers
+  - name: install apache2 on web servers (ubuntu)
     tags: apache,ubuntu
     ansible.builtin.apt:
       name:
@@ -32,6 +32,51 @@
         - libapache2-mod-php
       state: latest
     when: ansible_distribution == "Ubuntu"
+
+  - name: install apache2 on web servers (rocky)
+    tags: apache,rocky
+    ansible.builtin.dnf:
+      name: httpd
+    when: ansible_distribution == "Rocky"
+
+  - name: ensure apache2 is running (ubuntu)
+    tags: apache,ubuntu
+    ansible.builtin.service:
+      name: apache2
+      state: started
+    when: ansible_distribution == "Ubuntu"
+
+  - name: ensure apache2 is running (rocky)
+    tags: apache,rocky
+    ansible.builtin.service:
+      name: httpd
+      state: started
+    when: ansible_distribution == "Rocky"
+
+  - name: change admin email address
+    tags: apache,rocky
+    ansible.builtin.lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin  mliebold@rocky.whitehills.local
+    when: ansible_distribution == "Rocky"
+    register: httpd
+
+  - name: restart httpd (rocky)
+    tags: apache,rocky
+    ansible.builtin.service:
+      name: httpd
+      state: restarted
+    when: httpd.changed
+
+  - name: copy html file for site
+    tags: apache,ubuntu
+    ansible.builtin.copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
 
 # Database Servers
 

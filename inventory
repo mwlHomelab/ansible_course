@@ -1,5 +1,6 @@
 [web_servers]
 ubuntu.whitehills.local
+rocky.whitehills.local
 
 [db_servers]
 rocky.whitehills.local
